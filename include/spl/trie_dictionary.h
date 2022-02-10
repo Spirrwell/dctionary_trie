@@ -10,6 +10,23 @@
 
 namespace spl
 {
+	namespace internal
+	{
+		static constexpr std::string_view characterSet = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+		static constexpr std::array<unsigned char, 256> initialize_characterset_map()
+		{
+			std::array<unsigned char, 256> arr{};
+
+			for (std::size_t i = 0; i < characterSet.size(); ++i)
+				arr[characterSet[i]] = static_cast<unsigned char>(i);
+
+			return arr;
+		}
+
+		static constexpr std::array<unsigned char, 256> characterSetMap = initialize_characterset_map();
+	}
+
 	struct trie
 	{
 		void insert(std::string_view str)
@@ -17,7 +34,7 @@ namespace spl
 			trie *node = this;
 			for (const unsigned char c : str)
 			{
-				if (c < static_cast<unsigned char>(characterSet[0]) || c > static_cast<unsigned char>(characterSet[characterSet.size() - 1]))
+				if (c < static_cast<unsigned char>(internal::characterSet[0]) || c > static_cast<unsigned char>(internal::characterSet[internal::characterSet.size() - 1]))
 					throw std::runtime_error("Invalid character in string");
 
 				const std::size_t index = character_to_index(c);
@@ -57,7 +74,7 @@ namespace spl
 
 			for (const unsigned char c : prefix)
 			{
-				if (c < static_cast<unsigned char>(characterSet[0]) || c > static_cast<unsigned char>(characterSet[characterSet.size() - 1]))
+				if (c < static_cast<unsigned char>(internal::characterSet[0]) || c > static_cast<unsigned char>(internal::characterSet[internal::characterSet.size() - 1]))
 					return;
 
 				const std::size_t index = character_to_index(c);
@@ -102,7 +119,7 @@ namespace spl
 				if (!child.get())
 					continue;
 				
-				working_string += characterSet[index];
+				working_string += internal::characterSet[index];
 				
 				if (child->isStringEnd)
 				{
@@ -120,23 +137,10 @@ namespace spl
 			}
 		}
 
-		static std::size_t character_to_index(const unsigned char c) { return characterSetMap[c]; }
-
-		static constexpr std::array<unsigned char, 256> initialize_characterset_map()
-		{
-			std::array<unsigned char, 256> arr{};
-
-			for (std::size_t i = 0; i < characterSet.size(); ++i)
-				arr[characterSet[i]] = static_cast<unsigned char>(i);
-
-			return arr;
-		}
-
-		static constexpr std::string_view characterSet = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-		inline static std::array<unsigned char, 256> characterSetMap = initialize_characterset_map();
+		static std::size_t character_to_index(const unsigned char c) { return internal::characterSetMap[c]; }
 
 		bool isStringEnd = false;
-		std::array<std::unique_ptr<trie>, characterSet.size()> child;
+		std::array<std::unique_ptr<trie>, internal::characterSet.size()> child;
 	};
 
 }
