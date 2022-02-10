@@ -132,7 +132,7 @@ namespace spl
 			return arr;
 		}
 
-		static constexpr std::string_view characterSet = " !\"#$%\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+		static constexpr std::string_view characterSet = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 		inline static std::array<unsigned char, 256> characterSetMap = initialize_characterset_map();
 
 		bool isStringEnd = false;
